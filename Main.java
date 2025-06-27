@@ -1,30 +1,42 @@
 import java.io.*;
-import java.time.LocalDateTime;
 
-public class Stats {
-    public static void save(String winner, int size) {
+public class Config {
+    public static String player1 = "Гравець 1";
+    public static String player2 = "Гравець 2";
+    public static int fieldSize = 3;
+
+    public static void load() {
         try {
-            PrintWriter pw = new PrintWriter(new FileWriter("stats.txt", true));
-            pw.println("Дата: " + LocalDateTime.now());
-            pw.println("Гравець: " + Config.player1 + " vs " + Config.player2);
-            pw.println("Переможець: " + winner);
-            pw.println("Розмір поля: " + size);
-            pw.println("---");
-            pw.close();
-        } catch (IOException e) {
-            System.out.println("Помилка збереження статистики.");
+            BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+            player1 = br.readLine();
+            player2 = br.readLine();
+            fieldSize = Integer.parseInt(br.readLine());
+            br.close();
+        } catch (Exception e) {
+            System.out.println("Налаштування не знайдено, використовуються стандартні.");
         }
     }
 
-    public static void show() {
+    public static void save() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("stats.txt"));
-            String line;
-            while ((line = br.readLine()) != null)
-                System.out.println(line);
-            br.close();
+            PrintWriter pw = new PrintWriter("config.txt");
+            pw.println(player1);
+            pw.println(player2);
+            pw.println(fieldSize);
+            pw.close();
         } catch (IOException e) {
-            System.out.println("Статистика ще не створена.");
+            System.out.println("Помилка збереження налаштувань.");
         }
+    }
+
+    public static void update(Scanner scanner) {
+        System.out.print("Ім’я першого гравця: ");
+        player1 = scanner.nextLine();
+        System.out.print("Ім’я другого гравця: ");
+        player2 = scanner.nextLine();
+        System.out.print("Розмір поля (наприклад 3): ");
+        fieldSize = scanner.nextInt();
+        scanner.nextLine();
+        save();
     }
 }
